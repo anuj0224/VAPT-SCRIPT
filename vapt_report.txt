@@ -1,0 +1,125 @@
+1. Executive Summary
+====================
+Automated read-only VAPT audit performed.
+No exploitation or destructive actions executed.
+
+2. Scan Scope & Authorization
+=============================
+Scan Type : Authenticated (Read-only)
+Scope     : Host, Services, Configurations
+Auth      : System Owner Assumed
+
+3. Server Overview
+==================
+Platform : rhel
+Hostname : prod-api-01
+IP       : 10.10.20.15
+Kernel   : 5.14.0-362.18.1.el9_3.x86_64
+
+4. Network Exposure
+===================
+Netid State  Recv-Q Send-Q Local Address:Port   Peer Address:Port
+tcp   LISTEN 0      128    0.0.0.0:22            0.0.0.0:*
+tcp   LISTEN 0      128    0.0.0.0:80            0.0.0.0:*
+tcp   LISTEN 0      128    0.0.0.0:443           0.0.0.0:*
+tcp   LISTEN 0      128    0.0.0.0:5432          0.0.0.0:*
+
+❌ RISK (+30): Database port exposed
+
+5. Service & Version Analysis
+=============================
+nginx.service        loaded active running A high performance web server
+postgresql.service   loaded active running PostgreSQL database server
+docker.service       loaded active running Docker Application Container Engine
+
+6. CVE, CVSS, Exploit & MITRE Mapping
+====================================
+CVE ID      : CVE-2024-3094
+Package     : xz-libs-5.2.5-1.el9
+Severity    : important
+CVSS Score  : 7.5
+Exploit DB  : YES
+MITRE       : T1055, T1068
+
+❌ RISK (+30): High CVE CVE-2024-3094
+
+CVE ID      : CVE-2023-4911
+Package     : glibc-2.34-125.el9
+Severity    : important
+CVSS Score  : 7.5
+Exploit DB  : YES
+MITRE       : T1055
+
+❌ RISK (+30): High CVE CVE-2023-4911
+
+CVE ID      : CVE-2023-38545
+Package     : curl-7.76.1-31.el9
+Severity    : medium
+CVSS Score  : 5.0
+Exploit DB  : NO
+MITRE       : T1071
+
+❌ RISK (+20): Medium CVE CVE-2023-38545
+
+7. File & Configuration Footprint
+=================================
+Detected File Types:
+  42 js
+  19 php
+  8  env
+  61 conf
+
+Sensitive File Names:
+/var/www/app/.env
+/var/www/app/config/credentials.json
+/etc/ssl/private/server.key
+
+❌ RISK (+25): Sensitive files present on filesystem
+
+8. Configuration Weaknesses
+===========================
+Web Root Exposure:
+/var/www/html/db_backup.sql
+/var/www/html/config.old
+
+❌ RISK (+30): Backup files exposed in web root
+
+Git Repository Presence:
+/var/www/app/.git
+
+❌ RISK (+20): Source repository exposed
+
+Container Environment:
+nginx:1.25
+postgres:14
+redis:7
+
+❌ RISK (+10): Containers running on host
+
+9. SBOM (Installed Packages)
+============================
+nginx 1.25.3
+openssl 3.0.7
+glibc 2.34
+docker-ce 24.0.5
+postgresql-server 14.11
+redis 7.2.4
+
+10. Risk Score Summary
+======================
+Total Risk Score : 195
+Overall Severity : CRITICAL
+
+11. Actionable Recommendations
+==============================
+- Remove sensitive files from production systems
+- Patch critical CVEs immediately
+- Restrict exposed services and ports
+- Secure CI/CD artifacts
+- Enable monitoring & SIEM
+
+12. Disclaimer
+==============
+This assessment is informational only.
+Manual validation is recommended.
+Unauthorized usage is prohibited.
